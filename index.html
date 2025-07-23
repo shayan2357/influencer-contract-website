@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Influencer Partnership Contract - Shayan Industry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Three.js library for 3D background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a; /* Dark background for 3D theme */
+            margin: 0;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            position: relative; /* For absolute positioning of canvas and container */
+        }
+        #three-canvas {
+            position: fixed; /* Fixed to cover the entire viewport */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1; /* Behind other content */
+            display: block;
+        }
+        .container {
+            background-color: rgba(0, 0, 0, 0.85); /* Dark, slightly transparent black */
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7); /* Stronger shadow for dark theme */
+            padding: 2.5rem;
+            max-width: 900px;
+            width: 100%;
+            margin: 4rem auto; /* More margin for better spacing with fixed background */
+            position: relative; /* To ensure it's above the canvas */
+            z-index: 1; /* Above the canvas */
+            color: #e0e0e0; /* Default text color for container */
+        }
+        .form-group label {
+            font-weight: 600;
+            color: #e0e0e0; /* Light label color */
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="tel"],
+        .form-group input[type="number"] { /* Added number type */
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: rgba(255, 255, 255, 0.1); /* Slightly transparent input background */
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle light border */
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            color: #ffffff; /* White input text */
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+        .form-group input[type="text"]:focus,
+        .form-group input[type="tel"]:focus,
+        .form-group input[type="number"]:focus { /* Added number type */
+            outline: none;
+            border-color: #a78bfa; /* Lighter purple focus color */
+            box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.4); /* Lighter purple shadow */
+            background-color: rgba(255, 255, 255, 0.15); /* Slightly brighter on focus */
+        }
+        .btn-primary {
+            background-color: #8b5cf6; /* Purple button */
+            color: #ffffff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 1.125rem;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(139, 92, 246, 0.4); /* Purple shadow */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none; /* Remove default button border */
+        }
+        .btn-primary:hover {
+            background-color: #7c3aed; /* Darker purple on hover */
+            transform: translateY(-2px); /* More pronounced lift */
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        .contract-section {
+            background-color: rgba(20, 20, 20, 0.9); /* Darker section background */
+            border-left: 4px solid #a78bfa; /* Lighter purple border */
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin-bottom: 2rem;
+            color: #c0c0c0; /* Light text color for contract section */
+        }
+        .contract-section h2 {
+            color: #ffffff; /* White heading */
+            font-size: 1.75rem; /* Slightly larger heading */
+            font-weight: 700;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1); /* Subtle light separator */
+            padding-bottom: 0.5rem;
+        }
+        .contract-section h3 {
+            color: #e0e0e0; /* Lighter heading */
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .contract-section p {
+            color: #c0c0c0; /* Light text color */
+            line-height: 1.7; /* Increased line height for readability */
+            margin-bottom: 0.75rem;
+        }
+        .contract-section ul {
+            list-style: disc;
+            margin-left: 1.5rem;
+            color: #c0c0c0; /* Light text color */
+            margin-bottom: 0.75rem;
+        }
+        .contract-section ol {
+            list-style: decimal;
+            margin-left: 1.5rem;
+            color: #c0c0c0; /* Light text color */
+            margin-bottom: 0.75rem;
+        }
+        .contract-section ul li,
+        .contract-section ol li {
+            margin-bottom: 0.5rem;
+        }
+        .info-message {
+            color: #a78bfa; /* Purple color for info message */
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border: 1px solid #a78bfa;
+            border-radius: 0.5rem;
+            background-color: rgba(167, 139, 250, 0.1);
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+                margin-top: 2rem;
+                margin-bottom: 2rem;
+            }
+            .btn-primary {
+                width: 100%;
+            }
+            .contract-section h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Canvas for Three.js background -->
+    <canvas id="three-canvas"></canvas>
+
+    <div class="container">
+        <h1 class="text-4xl font-extrabold text-center text-white mb-8">Influencer Partnership Contract</h1>
+
+        <div class="contract-section">
+            <h2>Agreement Overview</h2>
+            <p>This Influencer Partnership Contract ("Agreement") is entered into between the Influencer (hereinafter "Influencer") and Shayan Industry (hereinafter "Company"), effective upon the date of electronic acceptance by the Influencer.</p>
+
+            <h3>1. Revenue Split</h3>
+            <p>The revenue generated from the partnership activities shall be split as follows:</p>
+            <ul>
+                <li><strong>Influencer:</strong> Sixty percent (60%) of the net revenue.</li>
+                <li><strong>Shayan Industry:</strong> Forty percent (40%) of the net revenue.</li>
+            </ul>
+            <p>Net revenue is defined as gross revenue less any direct costs, chargebacks, or refunds directly attributable to the partnership activities.</p>
+
+            <h3>2. Contract Duration</h3>
+            <p>This Agreement shall commence on the date of acceptance and shall remain in full force and effect for a period of two (2) months ("Term"), unless terminated earlier as per the provisions of this Agreement.</p>
+
+            <h3>3. Responsibilities of Parties</h3>
+            <p>Both parties agree to uphold their respective responsibilities as outlined below:</p>
+            <ul>
+                <li><strong>Influencer Responsibilities:</strong>
+                    <ol>
+                        <li>Actively manage and engage with their community across all designated platforms.</li>
+                        <li>Create and publish high-quality content promoting the Company's initiatives, products, or services as agreed upon.</li>
+                        <li>Maintain a positive and professional image, ensuring all content aligns with the Company's brand guidelines and values.</li>
+                        <li>Provide regular reports or updates on community engagement metrics as reasonably requested by the Company.</li>
+                        <li>Adhere to all applicable laws and regulations, including disclosure requirements for sponsored content.</li>
+                    </ol>
+                </li>
+                <li><strong>Shayan Industry Responsibilities:</strong>
+                    <ol>
+                        <li>Handle all marketing strategies and campaigns related to the partnership.</li>
+                        <li>Implement initiatives for community growth and expansion.</li>
+                        <li>Negotiate and finalize deals with exchanges and other relevant partners.</li>
+                        <li>Provide the Influencer with necessary marketing materials, product information, and support.</li>
+                        <li>Ensure timely and accurate calculation and distribution of the Influencer's revenue share.</li>
+                    </ol>
+                </li>
+            </ul>
+
+            <h3>4. Intellectual Property</h3>
+            <p>All content created by the Influencer specifically for this partnership, including but not limited to videos, posts, images, and text, shall be jointly owned by both the Influencer and Shayan Industry for the duration of this contract and for promotional purposes thereafter. Neither party shall use the other's trademarks, logos, or copyrighted material without prior written consent, except as explicitly permitted by this Agreement.</p>
+
+            <h3>5. Confidentiality</h3>
+            <p>Both parties agree to keep confidential any proprietary or sensitive information disclosed during the course of this partnership, including but not limited to business strategies, financial data, and unreleased product information. This obligation of confidentiality shall survive the termination of this Agreement.</p>
+
+            <h3>6. Termination</h3>
+            <p>This Agreement may be terminated under the following conditions:</p>
+            <ul>
+                <li>By mutual written agreement of both parties.</li>
+                <li>By either party, with fourteen (14) days written notice, if the other party breaches any material term of this Agreement and fails to cure such breach within the notice period.</li>
+                <li>Immediately by Shayan Industry if the Influencer engages in any conduct that significantly harms the Company's reputation or brand image.</li>
+            </ul>
+
+            <h3>7. Governing Law and Dispute Resolution</h3>
+            <p>This Agreement shall be governed by and construed in accordance with the laws of [Your Country/State, e.g., Pakistan]. Any dispute, controversy, or claim arising out of or relating to this Agreement, or the breach, termination, or invalidity thereof, shall first be attempted to be resolved through good faith negotiations between the parties. If a resolution cannot be reached, the dispute shall be submitted to binding arbitration in [City, Country, e.g., Faisalabad, Pakistan] in accordance with the rules of [Arbitration Body, if applicable].</p>
+
+            <h3>8. Breach of Contract and Legal Actions</h3>
+            <p>In the event of a material breach of this Agreement by either party, the non-breaching party reserves the right to pursue all available legal remedies, including but not limited to:</p>
+            <ul>
+                <li>Seeking monetary damages for losses incurred as a result of the breach.</li>
+                <li>Seeking injunctive relief to prevent further unauthorized actions or to compel performance.</li>
+                <li>Termination of this Agreement without further obligation to the breaching party.</li>
+                <li>Recovery of legal fees and costs incurred in enforcing the terms of this Agreement.</li>
+            </ul>
+            <p>Any actions taken by the Influencer that are deemed to be in direct violation of the terms outlined herein, particularly those related to community management, content quality, brand representation, or confidentiality, may result in immediate termination of the contract and potential legal action for damages.</p>
+        </div>
+
+        <form id="contractForm" class="space-y-6">
+            <div class="flex items-center justify-center mb-6">
+                <h2 class="text-2xl font-bold text-white">Influencer Details</h2>
+            </div>
+            <div class="form-group">
+                <label for="fullName">Full Name:</label>
+                <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required class="focus:ring-purple-500 focus:border-purple-500">
+                <p id="fullNameError" class="error-message hidden"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="country">Country:</label>
+                <input type="text" id="country" name="country" placeholder="Enter your country" required class="focus:ring-purple-500 focus:border-purple-500">
+                <p id="countryError" class="error-message hidden"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" placeholder="Enter your city" required class="focus:ring-purple-500 focus:border-purple-500">
+                <p id="cityError" class="error-message hidden"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="passportId">Passport ID / National ID Card Number:</label>
+                <input type="text" id="passportId" name="passportId" placeholder="Enter your Passport ID or National ID Card Number" required class="focus:ring-purple-500 focus:border-purple-500">
+                <p id="passportIdError" class="error-message hidden"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input type="number" id="age" name="age" placeholder="Enter your age" min="18" required class="focus:ring-purple-500 focus:border-purple-500">
+                <p id="ageError" class="error-message hidden"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="phoneNumber">Phone Number:</label>
+                <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="e.g., +1234567890" required class="focus:ring-purple-500 focus:border-purple-500">
+                <p id="phoneNumberError" class="error-message hidden"></p>
+            </div>
+
+            <div class="info-message">
+                <p><strong>Important Note:</strong> Direct upload of images (Passport/National ID picture and selfie) is not supported through this form for security and email client compatibility reasons. Please be prepared to send these documents separately via a secure method upon request, or attach them manually to the email draft that will be generated after submission.</p>
+            </div>
+
+            <div class="flex items-center">
+                <input type="checkbox" id="agreeTerms" name="agreeTerms" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                <label for="agreeTerms" class="ml-2 block text-sm text-gray-200">I have read and agree to all terms and conditions of this contract.</label>
+            </div>
+            <p id="agreeTermsError" class="error-message hidden"></p>
+
+            <button type="submit" class="btn-primary w-full md:w-auto">Send Contract to Shayan Industry</button>
+            <p id="submissionMessage" class="text-center text-green-400 font-medium mt-4 hidden"></p>
+        </form>
+    </div>
+
+    <script>
+        // --- Three.js Background Animation ---
+        let scene, camera, renderer, particles;
+        const canvas = document.getElementById('three-canvas');
+
+        function initThreeJS() {
+            // Scene
+            scene = new THREE.Scene();
+            // Add a subtle fog for depth perception
+            scene.fog = new THREE.Fog(0x0a0a0a, 1, 15); // Black fog, near 1, far 15
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 5;
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setClearColor(0x000000, 0); // Transparent background for canvas
+
+            // Particles
+            const particleCount = 4000; // Increased particle count
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+
+            const color1 = new THREE.Color(0x8A2BE2); // BlueViolet
+            const color2 = new THREE.Color(0x4B0082); // Indigo
+            const color3 = new THREE.Color(0xDA70D6); // Orchid
+            const color4 = new THREE.Color(0x2a0a4a); // Darker purple for more depth
+
+            for (let i = 0; i < particleCount; i++) {
+                // Position particles randomly in a larger cube
+                positions[i * 3] = (Math.random() - 0.5) * 20; // Wider spread
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
+
+                // Assign random colors from the palette, including a darker one
+                const mixedColor = new THREE.Color();
+                const rand = Math.random();
+                if (rand < 0.33) {
+                    mixedColor.lerpColors(color1, color2, Math.random());
+                } else if (rand < 0.66) {
+                    mixedColor.lerpColors(color2, color3, Math.random());
+                } else {
+                    mixedColor.lerpColors(color3, color4, Math.random());
+                }
+
+
+                colors[i * 3] = mixedColor.r;
+                colors[i * 3 + 1] = mixedColor.g;
+                colors[i * 3 + 2] = mixedColor.b;
+            }
+
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const material = new THREE.PointsMaterial({
+                size: 0.05, // Slightly larger particles
+                vertexColors: true,
+                blending: THREE.AdditiveBlending, // For glowing effect
+                transparent: true,
+                opacity: 0.9 // Slightly higher opacity
+            });
+
+            particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+
+            // Add a simple light for subtle effect
+            const ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            directionalLight.position.set(0, 1, 0);
+            scene.add(directionalLight);
+        }
+
+        function animateThreeJS() {
+            requestAnimationFrame(animateThreeJS);
+
+            // Animate particles with more dynamic rotation
+            particles.rotation.x += 0.0008;
+            particles.rotation.y += 0.001;
+            particles.rotation.z += 0.0003; // Add Z-axis rotation
+
+            // Subtle camera movement
+            camera.position.x = Math.sin(Date.now() * 0.0001) * 0.1;
+            camera.position.y = Math.cos(Date.now() * 0.00008) * 0.1;
+
+            // Make particles "breathe" or move slightly
+            const positions = particles.geometry.attributes.position.array;
+            for (let i = 0; i < positions.length; i += 3) {
+                // Add a small, unique movement to each particle
+                positions[i] += Math.sin(Date.now() * 0.00005 + i * 0.1) * 0.0005;
+                positions[i + 1] += Math.cos(Date.now() * 0.00004 + i * 0.1) * 0.0005;
+                positions[i + 2] += Math.sin(Date.now() * 0.00006 + i * 0.1) * 0.0005;
+
+                // Simple boundary check to keep particles within a range
+                if (positions[i] > 10 || positions[i] < -10) positions[i] *= -0.95;
+                if (positions[i+1] > 10 || positions[i+1] < -10) positions[i+1] *= -0.95;
+                if (positions[i+2] > 10 || positions[i+2] < -10) positions[i+2] *= -0.95;
+            }
+            particles.geometry.attributes.position.needsUpdate = true;
+
+
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        window.addEventListener('resize', onWindowResize);
+        window.onload = function() {
+            initThreeJS();
+            animateThreeJS();
+        };
+
+        // --- Form Submission Logic ---
+        document.getElementById('contractForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Get form elements
+            const fullName = document.getElementById('fullName');
+            const country = document.getElementById('country');
+            const city = document.getElementById('city');
+            const passportId = document.getElementById('passportId');
+            const age = document.getElementById('age');
+            const phoneNumber = document.getElementById('phoneNumber');
+            const agreeTerms = document.getElementById('agreeTerms');
+
+            // Get error message elements
+            const fullNameError = document.getElementById('fullNameError');
+            const countryError = document.getElementById('countryError');
+            const cityError = document.getElementById('cityError');
+            const passportIdError = document.getElementById('passportIdError');
+            const ageError = document.getElementById('ageError');
+            const phoneNumberError = document.getElementById('phoneNumberError');
+            const agreeTermsError = document.getElementById('agreeTermsError');
+            const submissionMessage = document.getElementById('submissionMessage');
+
+            // Reset error messages
+            fullNameError.classList.add('hidden');
+            countryError.classList.add('hidden');
+            cityError.classList.add('hidden');
+            passportIdError.classList.add('hidden');
+            ageError.classList.add('hidden');
+            phoneNumberError.classList.add('hidden');
+            agreeTermsError.classList.add('hidden');
+            submissionMessage.classList.add('hidden');
+
+            let isValid = true;
+
+            // Validate Full Name
+            if (fullName.value.trim() === '') {
+                fullNameError.textContent = 'Full Name is required.';
+                fullNameError.classList.remove('hidden');
+                isValid = false;
+            }
+
+            // Validate Country
+            if (country.value.trim() === '') {
+                countryError.textContent = 'Country is required.';
+                countryError.classList.remove('hidden');
+                isValid = false;
+            }
+
+            // Validate City
+            if (city.value.trim() === '') {
+                cityError.textContent = 'City is required.';
+                cityError.classList.remove('hidden');
+                isValid = false;
+            }
+
+            // Validate Passport ID / National ID Card Number
+            if (passportId.value.trim() === '') {
+                passportIdError.textContent = 'Passport ID / National ID Card Number is required.';
+                passportIdError.classList.remove('hidden');
+                isValid = false;
+            }
+
+            // Validate Age
+            if (age.value.trim() === '' || isNaN(age.value) || parseInt(age.value) < 18) {
+                ageError.textContent = 'Age is required and must be 18 or older.';
+                ageError.classList.remove('hidden');
+                isValid = false;
+            }
+
+            // Validate Phone Number
+            const phoneRegex = /^\+?[0-9\s\-\(\)]{7,20}$/; // Basic regex for phone numbers
+            if (phoneNumber.value.trim() === '') {
+                phoneNumberError.textContent = 'Phone Number is required.';
+                phoneNumberError.classList.remove('hidden');
+                isValid = false;
+            } else if (!phoneRegex.test(phoneNumber.value.trim())) {
+                phoneNumberError.textContent = 'Please enter a valid phone number format (e.g., +1234567890).';
+                phoneNumberError.classList.remove('hidden');
+                isValid = false;
+            }
+
+            // Validate Agreement Checkbox
+            if (!agreeTerms.checked) {
+                agreeTermsError.textContent = 'You must agree to the terms and conditions to proceed.';
+                agreeTermsError.classList.remove('hidden');
+                isValid = false;
+            }
+
+            if (isValid) {
+                // Construct the email body with enhanced contract details
+                const subject = encodeURIComponent('Influencer Partnership Contract Agreement - Formal Acceptance');
+                const body = encodeURIComponent(
+                    `Dear Shayan Industry,\n\n` +
+                    `I, ${fullName.value.trim()}, hereby formally accept and agree to all terms and conditions of the Influencer Partnership Contract as presented on your website.\n\n` +
+                    `My personal details for record-keeping are as follows:\n` +
+                    `Full Name: ${fullName.value.trim()}\n` +
+                    `Country: ${country.value.trim()}\n` +
+                    `City: ${city.value.trim()}\n` +
+                    `Passport ID / National ID Card Number: ${passportId.value.trim()}\n` +
+                    `Age: ${age.value.trim()}\n` +
+                    `Phone Number: ${phoneNumber.value.trim()}\n\n` +
+                    `I understand and acknowledge the following key terms:\n` +
+                    `- Revenue Split: Influencer 60% / Shayan Industry 40% of net revenue.\n` +
+                    `- Contract Duration: 2 months from the date of this agreement.\n` +
+                    `- My Responsibilities: Community management, high-quality content creation, maintaining brand image, and adherence to legal disclosures.\n` +
+                    `- Shayan Industry Responsibilities: Marketing, community growth, exchange negotiations, and timely revenue distribution.\n` +
+                    `- Joint Ownership of IP: Content created for this partnership is jointly owned for the contract duration and promotional purposes thereafter.\n` +
+                    `- Confidentiality: All proprietary information shared will be kept confidential.\n` +
+                    `- Termination Clauses: Understanding the conditions under which this agreement may be terminated by either party.\n` +
+                    `- Governing Law: This contract is governed by the laws of [Your Country/State, e.g., Pakistan].\n` +
+                    `- Dispute Resolution: Commitment to good faith negotiations, followed by binding arbitration if necessary.\n` +
+                    `- Breach of Contract: Full understanding that any material breach may lead to legal actions, including monetary damages, injunctive relief, and recovery of legal fees.\n\n` +
+                    `I affirm that I have read, understood, and voluntarily agree to all clauses, including those pertaining to intellectual property, confidentiality, termination, governing law, dispute resolution, and the consequences of contract breach.\n\n` +
+                    `I look forward to a successful and mutually beneficial partnership.\n\n` +
+                    `Sincerely,\n${fullName.value.trim()}`
+                );
+
+                // Open default email client
+                window.location.href = `mailto:shayanindustry007@gmail.com?subject=${subject}&body=${body}`;
+
+                // Display submission message
+                submissionMessage.textContent = 'Email draft generated successfully! Please review and send it from your email client.';
+                submissionMessage.classList.remove('hidden');
+
+                // Optionally, clear the form after successful submission
+                // fullName.value = '';
+                // country.value = '';
+                // city.value = '';
+                // passportId.value = '';
+                // age.value = '';
+                // phoneNumber.value = '';
+                // agreeTerms.checked = false;
+
+            } else {
+                // If not valid, scroll to the first error message
+                const firstError = document.querySelector('.error-message:not(.hidden)');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
